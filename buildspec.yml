@@ -20,16 +20,14 @@ phases:
   pre_build:
     commands:
       - echo "Docker is installed. Proceeding with login..."
-      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin  # Đăng nhập Docker Hub để chuẩn bị build và push image
-      - export VERSION_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "Using version tag:$VERSION_TAG"
+      - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin  # Đăng nhập Docker Hub
+      - echo "Using latest tag for images"
+
   build:
     commands:
-      - echo "Building Docker image with version tag $VERSION_TAG..."
-      - docker build -t myapp-backend:$VERSION_TAG  backend-python/. 
-      - docker build -t myapp-frontend:$VERSION_TAG  frontend-python/. # Đường dẫn tới backend
-      - docker tag myapp-backend:$VERSION_TAG myapp-backend:latest
-      - docker tag myapp-frontend:$VERSION_TAG myapp-frontend:latest
+      - echo "Building Docker image with latest tag..."
+      - docker build -t myapp-backend:latest backend-python/.  # Build backend image
+      - docker build -t myapp-frontend:latest frontend-react/.  # Build frontend image
 
   post_build:
     commands:
@@ -40,8 +38,6 @@ phases:
       - docker run -d --name myapp-frontend -p 3000:3000 myapp-frontend:latest
       - echo "Docker containers are now running."
 
-
 artifacts:
   files:
     - "**/*"
-
