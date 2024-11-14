@@ -6,10 +6,10 @@ phases:
       - echo Setting up environment variables...
       - export AWS_DEFAULT_REGION=ap-southeast-1
       - aws sts get-caller-identity --query Account --output text > /dev/null
-      - PUBLIC_ECR_URI="public.ecr.aws/v1u7r8e9/lab-ecr-anhduykd12"
+      - PUBLIC_ECR_URI="public.ecr.aws/v1u7r8e9/anhduykd12/my-repo"
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo Logging in to Amazon ECR Public...
-      - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${PUBLIC_ECR_URI}"
+      - aws ecr get-login-password | docker login --username AWS --password-stdin public.ecr.aws/v1u7r8e9/anhduykd12/my-repo
       - echo "PUBLIC_ECR_URI is ${PUBLIC_ECR_URI}"
       - echo "IMAGE_TAG is ${IMAGE_TAG}"
 
