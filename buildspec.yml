@@ -9,7 +9,7 @@ phases:
       - PUBLIC_ECR_URI="public.ecr.aws/v1u7r8e9/lab-ecr-anhduykd12"
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - echo Logging in to Amazon ECR Public...
-      - aws ecr-public get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${PUBLIC_ECR_URI}"
+      - aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | docker login --username AWS --password-stdin "${PUBLIC_ECR_URI}"
       - echo "PUBLIC_ECR_URI is ${PUBLIC_ECR_URI}"
       - echo "IMAGE_TAG is ${IMAGE_TAG}"
 
