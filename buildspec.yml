@@ -26,7 +26,8 @@ phases:
   build:
     commands:
       - echo "Building Docker image with version tag $VERSION_TAG..."
-      - docker build -t $DOCKER_USERNAME/$BACKEND_IMAGE_NAME:$VERSION_TAG backend-python/.  # Đường dẫn tới backend
+      - docker build -t myapp-backend:$VERSION_TAG  backend-python/. 
+      - docker build -t myapp-frontend:$VERSION_TAG  frontend-python/. # Đường dẫn tới backend
       - docker tag myapp-backend:$VERSION_TAG myapp-backend:latest
       - docker tag myapp-frontend:$VERSION_TAG myapp-frontend:latest
 
