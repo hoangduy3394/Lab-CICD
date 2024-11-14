@@ -13,9 +13,10 @@ phases:
       - echo "Checking if Docker is installed and running..."
       - if ! command -v docker &> /dev/null; then echo "Docker is not installed, exiting." && exit 1; fi
       - echo "Installing Docker..."
-      - amazon-linux-extras install docker -y
-      - service docker start
-      - usermod -a -G docker ec2-user
+      - sudo apt-get update -y  # Cập nhật các gói trên Ubuntu
+      - sudo apt-get install -y docker.io  # Cài đặt Docker trên Ubuntu
+      - sudo systemctl start docker  # Khởi động Docker service
+      - sudo usermod -aG docker $USER  # Cấp quyền cho user
 
   pre_build:
     commands:
