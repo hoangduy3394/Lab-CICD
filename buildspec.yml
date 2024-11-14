@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   secrets-manager:
-    DOCKER_USERNAME: "lab_credentials:DOCKER_USERNAME"  # Lấy username từ secret
-    DOCKER_PASSWORD: "lab_credentials:DOCKER_PASSWORD"  # Lấy password
+    DOCKER_USERNAME: "lab-credentials:DOCKER_USERNAME"  # Lấy username từ secret
+    DOCKER_PASSWORD: "lab-credentials:DOCKER_PASSWORD"  # Lấy password
 
 phases:
   install:
