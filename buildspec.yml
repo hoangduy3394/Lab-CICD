@@ -22,7 +22,7 @@ phases:
       - echo "Docker is installed. Proceeding with login..."
       - echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin  # Đăng nhập Docker Hub để chuẩn bị build và push image
       - export VERSION_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - echo "Using version tag: $VERSION_TAG"
+      - echo "Using version tag:$VERSION_TAG"
   build:
     commands:
       - echo "Building Docker image with version tag $VERSION_TAG..."
