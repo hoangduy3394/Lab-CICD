@@ -1,0 +1,53 @@
+version: 0.2
+env:
+  secrets-manager:
+    SonarToken: prod/tutorial-app-be-configs:SonarToken
+    Host: prod/tutorial-app-be-configs:Host
+    Project: prod/tutorial-app-be-configs:Project
+    ProjectKey: prod/tutorial-app-be-configs:ProjectKey
+phases:
+  install:
+    runtime-versions:
+      nodejs: lts
+    commands:
+      - echo "Updating system and installing necessary package..."
+      - apt-get update
+      - apt-get install -y jq
+      - export SONAR_SCANNER_VERSION=5.0.1.3006
+      - export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-linux
+      - echo "Downloading and setting up Sonar Scanner...";
+      - curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-linux.zip;
+      - unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/;
+      - export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+      - export SONAR_SCANNER_OPTS="-server"
+      - export SONAR_TOKEN=$SonarToken
+  pre_build:
+    commands:
+      - echo "Installing project dependencies for SonarQube scan.."
+      - if [ ! -d "node_modules" ]; then
+          npm install;
+        else
+          echo "Node modules already cached, skipping install.";
+        fi
+  build:
+    commands:
+      - echo "Running SonarQube analysis..."
+      - echo "Sonar token:$SonarToken"
+      - echo "Sonar host:$Host"
+      - echo "Project key:$Project"
+      - echo "Project Key:$ProjectKey"
+      - sonar-scanner -Dsonar.projectKey=$ProjectKey -Dsonar.sources=. -Dsonar.host.url=$Host -Dsonar.qualitygate.wait=true
+      - sleep 5
+      - echo "Checking SonarQube Quality Gate status..."
+      - curl $Host/api/qualitygates/project_status?projectKey=$Project > result.json
+      - cat result.json
+      - if [ "$(jq -r '.projectStatus.status' result.json)" = "ERROR" ]; then
+          echo "Quality gate failed. SonarQube reported an ERROR status.";
+          exit 1;
+        else
+          echo "Quality gate passed. SonarQube reported a SUCCESS status.";
+        fi
+cache:
+  paths:
+    - "node_modules/**/*"
+    - "$HOME/.sonar/**/*"
